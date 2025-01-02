@@ -1,0 +1,10 @@
+node_modules
+.vscode
+.vite
+.vscode-test
+.vscode-test-report
+.vscode-test-report-report
+
+.git
+.DS_Store
+.env
