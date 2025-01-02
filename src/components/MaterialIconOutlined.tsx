@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface MaterialIconOutlinedProps {
   iconName: string;
@@ -21,7 +21,7 @@ const MaterialIconOutlined: React.FC<MaterialIconOutlinedProps> = ({
     </a>
   ) : (
     <span
-      className={`material-symbols-outlined ${iconClassName ? iconClassName : ''}`}
+      className={`material-symbols-outlined ${iconClassName ? iconClassName : ""}`}
     >
       {iconName}
     </span>

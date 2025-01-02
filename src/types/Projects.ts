@@ -4,7 +4,7 @@ interface Notification {
   UpdatedAt: string;
   DeletedAt: string | null;
   project: number;
-  type: 'slack' | 'email';
+  type: "slack" | "email";
 }
 
 interface Project {
@@ -19,7 +19,7 @@ interface Project {
 }
 
 interface NotificationCreate {
-  type: 'slack' | 'email';
+  type: "slack" | "email";
 }
 
 interface ProjectCreate {

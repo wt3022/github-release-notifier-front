@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useBulkDeleteProject, useProjectList } from '../../hooks/useProjects';
-import { useNavigate } from 'react-router-dom';
-import { Button, Checkbox, TextField } from '@mui/material';
-import MaterialIconOutlined from '../../components/MaterialIconOutlined';
+import React, { useState } from "react";
+import { useBulkDeleteProject, useProjectList } from "../../hooks/useProjects";
+import { useNavigate } from "react-router-dom";
+import { Button, Checkbox, TextField } from "@mui/material";
+import MaterialIconOutlined from "../../components/MaterialIconOutlined";
 
 function formatDate(date: string) {
   const dateObj = new Date(date);
@@ -56,7 +56,7 @@ function formatDate(date: string) {
 const ProjectList: React.FC = () => {
   const navigate = useNavigate();
   const { projects, loading, error } = useProjectList();
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [editMode, setEditMode] = useState(false);
   const { deleteProjectIDs, setDeleteProjectIDs, deleteError, deleteProject } =
     useBulkDeleteProject();
@@ -68,7 +68,7 @@ const ProjectList: React.FC = () => {
       // 画面をリロード
       window.location.reload();
     } catch (err) {
-      console.error('削除エラー:', err);
+      console.error("削除エラー:", err);
     }
   };
 
@@ -93,16 +93,16 @@ const ProjectList: React.FC = () => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               console.log(searchText);
             }
           }}
         />
         <Button
           variant="contained"
-          onClick={() => navigate('/projects/create')}
+          onClick={() => navigate("/projects/create")}
           className="h-10 w-32 self-start"
-          sx={{ padding: '2px 4px', fontWeight: 'bold' }}
+          sx={{ padding: "2px 4px", fontWeight: "bold" }}
         >
           新規作成
         </Button>
@@ -137,7 +137,7 @@ const ProjectList: React.FC = () => {
                   setDeleteProjectIDs((prev) =>
                     prev.includes(project.ID)
                       ? prev.filter((p) => p !== project.ID)
-                      : [...prev, project.ID]
+                      : [...prev, project.ID],
                   );
                 }
               }}

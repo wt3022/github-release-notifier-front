@@ -1,5 +1,5 @@
-import React from 'react';
-import MaterialIconOutlined from './MaterialIconOutlined';
+import React from "react";
+import MaterialIconOutlined from "./MaterialIconOutlined";
 
 const Sidebar: React.FC = () => {
   return (
@@ -14,8 +14,8 @@ const Sidebar: React.FC = () => {
 
       <div className="h-full w-full flex flex-col divide-y-2 border-gray-200 grow">
         {[
-          { name: 'ホーム', href: '/' },
-          { name: 'プロジェクト', href: '/projects' },
+          { name: "ホーム", href: "/" },
+          { name: "プロジェクト", href: "/projects" },
         ].map(({ name, href }) => (
           <React.Fragment key={name}>
             <a href={href} className="w-full p-2 text-blue-500 hover:underline">

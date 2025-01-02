@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import ProjectService from '../services/ProjectService';
-import { Project, ProjectCreate } from '../types/Projects';
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import ProjectService from "../services/ProjectService";
+import { Project, ProjectCreate } from "../types/Projects";
 
 const projectService = new ProjectService();
 
@@ -21,7 +21,7 @@ const useProjectList = () => {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError('An unknown error occurred');
+          setError("An unknown error occurred");
         }
       } finally {
         setLoading(false);
@@ -51,7 +51,7 @@ const useProjectDetail = () => {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError('An unknown error occurred');
+          setError("An unknown error occurred");
         }
       } finally {
         setLoading(false);
@@ -66,10 +66,10 @@ const useProjectDetail = () => {
 
 const useProjectCreate = () => {
   const [project, setProject] = useState<ProjectCreate>({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     notification: {
-      type: 'slack',
+      type: "slack",
     },
   });
   const [createError, setCreateError] = useState<string | null>(null);
@@ -82,7 +82,7 @@ const useProjectCreate = () => {
       if (err instanceof Error) {
         setCreateError(err.message);
       } else {
-        setCreateError('予期せぬエラーが発生しました');
+        setCreateError("予期せぬエラーが発生しました");
       }
       throw err;
     }
@@ -103,7 +103,7 @@ const useBulkDeleteProject = () => {
       if (err instanceof Error) {
         setDeleteError(err.message);
       } else {
-        setDeleteError('予期せぬエラーが発生しました');
+        setDeleteError("予期せぬエラーが発生しました");
       }
     }
   };

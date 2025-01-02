@@ -1,5 +1,5 @@
-import React from 'react';
-import { useProjectDetail } from '../../hooks/useProjects';
+import React from "react";
+import { useProjectDetail } from "../../hooks/useProjects";
 
 const ProjectDetail: React.FC = () => {
   const { project, loading, error } = useProjectDetail();

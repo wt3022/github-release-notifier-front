@@ -1,4 +1,4 @@
-import { Project, ProjectCreate } from '../types/Projects';
+import { Project, ProjectCreate } from "../types/Projects";
 
 class ProjectService {
   private baseUrl: string;
@@ -14,8 +14,8 @@ class ProjectService {
     }
 
     // レスポンスが空の場合は undefined を返す
-    const contentLength = response.headers.get('Content-Length');
-    if (contentLength === '0' || response.status === 204) {
+    const contentLength = response.headers.get("Content-Length");
+    if (contentLength === "0" || response.status === 204) {
       return undefined as T;
     }
 
@@ -32,16 +32,16 @@ class ProjectService {
   }
   async createProject(project: ProjectCreate): Promise<Project> {
     const response = await fetch(`${this.baseUrl}/projects/`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(project),
     });
     return this.handleRequest(response);
   }
   async deleteProject(projectIds: Array<number>): Promise<void> {
     const response = await fetch(`${this.baseUrl}/projects/bulk_delete`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(projectIds),
     });

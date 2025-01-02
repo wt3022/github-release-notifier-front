@@ -1,7 +1,7 @@
-import React from 'react';
-import { useProjectCreate } from '../../hooks/useProjects';
-import { Button, MenuItem, Select, TextField } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useProjectCreate } from "../../hooks/useProjects";
+import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const parseError = (error: string) => {
   const errorMessage = JSON.parse(error);
@@ -19,7 +19,7 @@ const ProjectCreate: React.FC = () => {
 
     try {
       await createProject(project);
-      navigate('/projects');
+      navigate("/projects");
     } catch (err) {
       console.error(err);
     }
@@ -41,7 +41,7 @@ const ProjectCreate: React.FC = () => {
             name="name"
             placeholder="プロジェクト名"
             className="w-96"
-            sx={{ padding: '2px 4px' }}
+            sx={{ padding: "2px 4px" }}
             value={project.name}
             onChange={(e) => setProject({ ...project, name: e.target.value })}
             required
@@ -56,7 +56,7 @@ const ProjectCreate: React.FC = () => {
             multiline
             rows={4}
             className="w-96"
-            sx={{ padding: '2px 4px' }}
+            sx={{ padding: "2px 4px" }}
             value={project.description}
             onChange={(e) =>
               setProject({ ...project, description: e.target.value })
@@ -71,7 +71,7 @@ const ProjectCreate: React.FC = () => {
             onChange={(e) =>
               setProject({
                 ...project,
-                notification: { type: e.target.value as 'slack' | 'email' },
+                notification: { type: e.target.value as "slack" | "email" },
               })
             }
             required
@@ -84,7 +84,7 @@ const ProjectCreate: React.FC = () => {
           type="submit"
           variant="contained"
           className="h-10 w-32 self-start"
-          sx={{ padding: '2px 4px', fontWeight: 'bold' }}
+          sx={{ padding: "2px 4px", fontWeight: "bold" }}
         >
           作成
         </Button>
