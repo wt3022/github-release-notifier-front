@@ -28,4 +28,15 @@ interface ProjectCreate {
   notification: NotificationCreate;
 }
 
-export type { Project, ProjectCreate };
+interface NotificationUpdate {
+  type: "slack" | "email";
+}
+
+interface ProjectUpdate {
+  ID: number;
+  name: string;
+  description: string;
+  notification: NotificationUpdate;
+}
+
+export type { Project, ProjectCreate, ProjectUpdate };

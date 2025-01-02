@@ -1,4 +1,4 @@
-import { Project, ProjectCreate } from "../types/Projects";
+import { Project, ProjectCreate, ProjectUpdate } from "../types/Projects";
 
 class ProjectService {
   private baseUrl: string;
@@ -37,6 +37,15 @@ class ProjectService {
     });
     return this.handleRequest(response);
   }
+
+  async updateProject(project: ProjectUpdate): Promise<Project> {
+    const response = await fetch(`${this.baseUrl}/projects/`, {
+      method: "PATCH",
+      body: JSON.stringify(project),
+    });
+    return this.handleRequest(response);
+  }
+
   async deleteProject(projectIds: Array<number>): Promise<void> {
     const response = await fetch(`${this.baseUrl}/projects/bulk_delete`, {
       method: "DELETE",

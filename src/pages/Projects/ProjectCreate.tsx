@@ -2,11 +2,7 @@ import React from "react";
 import { useProjectCreate } from "../../hooks/useProjects";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-const parseError = (error: string) => {
-  const errorMessage = JSON.parse(error);
-  return errorMessage.error;
-};
+import { parseError } from "../../utils/error";
 
 const ProjectCreate: React.FC = () => {
   const { project, setProject, createError, setCreateError, createProject } =

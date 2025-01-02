@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ProjectService from "../services/ProjectService";
-import { Project, ProjectCreate } from "../types/Projects";
+import { Project, ProjectCreate, ProjectUpdate } from "../types/Projects";
 
 const projectService = new ProjectService();
 
@@ -91,6 +91,39 @@ const useProjectCreate = () => {
   return { project, setProject, createError, setCreateError, createProject };
 };
 
+const useProjectUpdate = () => {
+  const [updateProjectRequest, setUpdateProjectRequest] =
+    useState<ProjectUpdate>({
+      ID: 0,
+      name: "",
+      description: "",
+      notification: {
+        type: "slack",
+      },
+    });
+
+  const [updateError, setUpdateError] = useState<string | null>(null);
+
+  const updateProject = async (project: ProjectUpdate) => {
+    try {
+      await projectService.updateProject(project);
+    } catch (err) {
+      if (err instanceof Error) {
+        setUpdateError(err.message);
+      } else {
+        setUpdateError("予期せぬエラーが発生しました");
+      }
+    }
+  };
+
+  return {
+    updateProjectRequest,
+    setUpdateProjectRequest,
+    updateError,
+    updateProject,
+  };
+};
+
 const useBulkDeleteProject = () => {
   const [deleteProjectIDs, setDeleteProjectIDs] = useState<Array<number>>([]);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -116,4 +149,5 @@ export {
   useProjectDetail,
   useProjectCreate,
   useBulkDeleteProject,
+  useProjectUpdate,
 };
