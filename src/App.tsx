@@ -4,7 +4,7 @@ import Layout from "./components/Layout";
 import ProjectList from "./pages/Projects/ProjectList";
 import ProjectDetail from "./pages/Projects/ProjectDetail";
 import ProjectCreate from "./pages/Projects/ProjectCreate";
-import ProjectUpdate from "./pages/ProjectUpdate";
+import ProjectUpdate from "./pages/Projects/ProjectUpdate";
 
 const App: React.FC = () => {
   return (

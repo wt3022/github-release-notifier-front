@@ -1,8 +1,8 @@
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import { FormEvent, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { useProjectUpdate } from "../hooks/useProjects";
-import { parseError } from "../utils/error";
+import { useProjectUpdate } from "../../hooks/useProjects";
+import { parseError } from "../../utils/error";
 
 function ProjectUpdate() {
   const { projectId } = useParams();
@@ -25,7 +25,7 @@ function ProjectUpdate() {
         notification: { type: project?.notification.type || "slack" },
       });
     }
-  }, [projectId]);
+  }, [projectId, setUpdateProjectRequest, state?.project]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
