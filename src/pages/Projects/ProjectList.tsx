@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, TextField } from "@mui/material";
 import MaterialIconOutlined from "../../components/MaterialIconOutlined";
 import { formatDate } from "../../utils/date";
+import { NavigateButton } from "../../components/Button";
 
 const ProjectList: React.FC = () => {
   const navigate = useNavigate();
@@ -50,14 +51,12 @@ const ProjectList: React.FC = () => {
             }
           }}
         />
-        <Button
-          variant="contained"
-          onClick={() => navigate("/projects/create")}
+        <NavigateButton
+          to="/projects/create"
           className="h-10 w-32 self-start"
           sx={{ padding: "2px 4px", fontWeight: "bold" }}
-        >
-          新規作成
-        </Button>
+          children="新規作成"
+        />
       </div>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800">プロジェクト一覧</h2>

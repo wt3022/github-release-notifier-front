@@ -1,9 +1,11 @@
 import { useLocation } from "react-router-dom";
 import { parseError } from "../../utils/error";
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { MenuItem, Select, TextField } from "@mui/material";
 import { useCreateRepository } from "../../hooks/useRepositories";
 import { FormEvent, useEffect } from "react";
 import { WatchType } from "../../types/Repositories";
+import { FormField } from "../../components/Form";
+import { SubmitButton } from "../../components/Button";
 
 function RepositoryCreate() {
   const { project } = useLocation().state;
@@ -43,8 +45,7 @@ function RepositoryCreate() {
       )}
       <h1 className="text-2xl text-gray-800">リポジトリ作成</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        <div>
-          <p>リポジトリオーナー</p>
+        <FormField label="リポジトリオーナー">
           <TextField
             type="text"
             name="owner"
@@ -57,9 +58,8 @@ function RepositoryCreate() {
             }
             required
           />
-        </div>
-        <div>
-          <p>リポジトリ名</p>
+        </FormField>
+        <FormField label="リポジトリ名">
           <TextField
             type="text"
             name="name"
@@ -72,11 +72,11 @@ function RepositoryCreate() {
             }
             required
           />
-        </div>
-        <div>
-          <p>リポジトリタイプ</p>
+        </FormField>
+        <FormField label="リポジトリタイプ">
           <Select
             value={repository.watch_type}
+            className="w-32"
             onChange={(e) =>
               setRepository({
                 ...repository,
@@ -88,15 +88,12 @@ function RepositoryCreate() {
             <MenuItem value="release">Release</MenuItem>
             <MenuItem value="tag">Tag</MenuItem>
           </Select>
-        </div>
-        <Button
-          type="submit"
-          variant="contained"
+        </FormField>
+        <SubmitButton
           className="h-10 w-32 self-start"
           sx={{ padding: "2px 4px", fontWeight: "bold" }}
-        >
-          作成
-        </Button>
+          children="作成"
+        />
       </form>
     </div>
   );

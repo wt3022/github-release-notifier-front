@@ -1,8 +1,10 @@
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { MenuItem, Select, TextField } from "@mui/material";
 import { FormEvent, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useProjectUpdate } from "../../hooks/useProjects";
 import { parseError } from "../../utils/error";
+import { FormField } from "../../components/Form";
+import { SubmitButton } from "../../components/Button";
 
 function ProjectUpdate() {
   const { projectId } = useParams();
@@ -45,8 +47,7 @@ function ProjectUpdate() {
       )}
       <h1 className="text-2xl font-bold">プロジェクト更新</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div>
-          <p>プロジェクト名</p>
+        <FormField label="プロジェクト名">
           <TextField
             value={updateProjectRequest.name}
             onChange={(e) =>
@@ -56,9 +57,8 @@ function ProjectUpdate() {
               })
             }
           />
-        </div>
-        <div>
-          <p>プロジェクト説明</p>
+        </FormField>
+        <FormField label="プロジェクト説明">
           <TextField
             multiline
             rows={4}
@@ -70,11 +70,11 @@ function ProjectUpdate() {
               })
             }
           />
-        </div>
-        <div>
-          <p>通知方法</p>
+        </FormField>
+        <FormField label="通知方法">
           <Select
             value={updateProjectRequest.notification.type}
+            className="w-32"
             onChange={(e) =>
               setUpdateProjectRequest({
                 ...updateProjectRequest,
@@ -85,15 +85,13 @@ function ProjectUpdate() {
             <MenuItem value="slack">Slack</MenuItem>
             <MenuItem value="email">Email</MenuItem>
           </Select>
-        </div>
-        <Button
-          type="submit"
+        </FormField>
+        <SubmitButton
           variant="contained"
           className="h-10 w-32 self-start"
           sx={{ padding: "2px 4px", fontWeight: "bold" }}
-        >
-          作成
-        </Button>
+          children="更新"
+        />
       </form>
     </div>
   );

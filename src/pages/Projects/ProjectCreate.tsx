@@ -1,8 +1,10 @@
 import React from "react";
 import { useProjectCreate } from "../../hooks/useProjects";
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { MenuItem, Select, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { parseError } from "../../utils/error";
+import { FormField } from "../../components/Form";
+import { SubmitButton } from "../../components/Button";
 
 const ProjectCreate: React.FC = () => {
   const { project, setProject, createError, setCreateError, createProject } =
@@ -30,8 +32,7 @@ const ProjectCreate: React.FC = () => {
       )}
       <h1 className="text-2xl text-gray-800">プロジェクト作成</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        <div>
-          <p>プロジェクト名</p>
+        <FormField label="プロジェクト名">
           <TextField
             type="text"
             name="name"
@@ -42,9 +43,8 @@ const ProjectCreate: React.FC = () => {
             onChange={(e) => setProject({ ...project, name: e.target.value })}
             required
           />
-        </div>
-        <div>
-          <p>プロジェクト説明</p>
+        </FormField>
+        <FormField label="プロジェクト説明">
           <TextField
             type="text"
             name="description"
@@ -58,9 +58,8 @@ const ProjectCreate: React.FC = () => {
               setProject({ ...project, description: e.target.value })
             }
           />
-        </div>
-        <div>
-          <p>通知方法</p>
+        </FormField>
+        <FormField label="通知方法">
           <Select
             value={project.notification.type}
             className="w-96"
@@ -75,15 +74,13 @@ const ProjectCreate: React.FC = () => {
             <MenuItem value="slack">Slack</MenuItem>
             <MenuItem value="email">Email</MenuItem>
           </Select>
-        </div>
-        <Button
-          type="submit"
+        </FormField>
+        <SubmitButton
           variant="contained"
           className="h-10 w-32 self-start"
           sx={{ padding: "2px 4px", fontWeight: "bold" }}
-        >
-          作成
-        </Button>
+          children="作成"
+        />
       </form>
     </div>
   );
