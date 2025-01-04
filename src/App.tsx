@@ -5,6 +5,7 @@ import ProjectList from "./pages/Projects/ProjectList";
 import ProjectDetail from "./pages/Projects/ProjectDetail";
 import ProjectCreate from "./pages/Projects/ProjectCreate";
 import ProjectUpdate from "./pages/Projects/ProjectUpdate";
+import RepositoryCreate from "./pages/Repositories/RepositoryCreate";
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const App: React.FC = () => {
             path="/projects/update/:projectId"
             element={<ProjectUpdate />}
           />
+          <Route path="/repositories/create" element={<RepositoryCreate />} />
         </Routes>
       </Layout>
     </Router>

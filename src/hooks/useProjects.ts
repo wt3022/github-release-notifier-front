@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import ProjectService from "../services/ProjectService";
 import { Project, ProjectCreate, ProjectUpdate } from "../types/Projects";
 
@@ -35,17 +34,18 @@ const useProjectList = () => {
 };
 
 // プロジェクト詳細を取得するフック
-const useProjectDetail = () => {
-  const { projectId } = useParams<{ projectId: string }>();
+const useProjectDetail = (id: string | undefined) => {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) return;
+
     const fetchProjectDetail = async () => {
       try {
         setLoading(true);
-        const data = await projectService.fetchProjectDetail(projectId!);
+        const data = await projectService.fetchProjectDetail(id);
         setProject(data);
       } catch (err) {
         if (err instanceof Error) {
@@ -59,7 +59,7 @@ const useProjectDetail = () => {
     };
 
     fetchProjectDetail();
-  }, [projectId]);
+  }, [id]);
 
   return { project, loading, error };
 };

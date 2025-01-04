@@ -1,14 +1,14 @@
 import React from "react";
 import { useProjectDetail } from "../../hooks/useProjects";
 import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "../../utils/date";
 import { watchTypeJaMap } from "../../types/Projects";
 
 const ProjectDetail: React.FC = () => {
-  const { project, loading, error } = useProjectDetail();
+  const { projectId } = useParams<{ projectId: string }>();
+  const { project, loading, error } = useProjectDetail(projectId);
   const navigate = useNavigate();
-  console.log(project);
 
   if (loading) {
     return <div>読み込み中...</div>;
@@ -62,7 +62,7 @@ const ProjectDetail: React.FC = () => {
             variant="contained"
             color="primary"
             onClick={() => {
-              navigate(`/projects/${project.ID}/repositories/create`, {
+              navigate(`/repositories/create`, {
                 state: {
                   project: project,
                 },
@@ -86,7 +86,7 @@ const ProjectDetail: React.FC = () => {
                   監視対象
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  最終通知日
+                  最終更新日
                 </th>
               </tr>
             </thead>
