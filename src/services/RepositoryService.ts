@@ -29,6 +29,14 @@ class RepositoryService {
     });
     return this.handleRequest(response);
   }
+
+  async deleteRepository(ids: number[]): Promise<void> {
+    const response = await fetch(`${this.baseUrl}/repositories/bulk_delete`, {
+      method: "DELETE",
+      body: JSON.stringify(ids),
+    });
+    return this.handleRequest(response);
+  }
 }
 
 export default RepositoryService;

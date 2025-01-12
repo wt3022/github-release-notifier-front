@@ -1,22 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useProjectCreate } from "../../hooks/useProjects";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { parseError } from "../../utils/error";
 import { FormField } from "../../components/Form";
 import { SubmitButton } from "../../components/Button";
-
-const ProjectCreate: React.FC = () => {
-  const { project, setProject, createError, setCreateError, createProject } =
-    useProjectCreate();
+import { Location } from "../../types/location";
+const ProjectCreate: React.FC<{
+  setLocationList: React.Dispatch<React.SetStateAction<Location[]>>;
+}> = ({ setLocationList }) => {
+  const {
+    projectCreateRequest,
+    setProjectCreateRequest,
+    projectCreateError,
+    setProjectCreateError,
+    createProject,
+  } = useProjectCreate();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setLocationList([
+      { name: "ホーム", href: "/" },
+      { name: "プロジェクト", href: "/projects" },
+      { name: "プロジェクト作成", href: "/projects/create" },
+    ]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setCreateError(null);
+    setProjectCreateError(null);
 
     try {
-      await createProject(project);
+      await createProject(projectCreateRequest);
       navigate("/projects");
     } catch (err) {
       console.error(err);
@@ -25,9 +40,9 @@ const ProjectCreate: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {createError && (
+      {projectCreateError && (
         <div className="p-4 text-red-700 bg-red-100 rounded-md border border-red-400">
-          {parseError(createError)}
+          {parseError(projectCreateError)}
         </div>
       )}
       <h1 className="text-2xl text-gray-800">プロジェクト作成</h1>
@@ -39,8 +54,13 @@ const ProjectCreate: React.FC = () => {
             placeholder="プロジェクト名"
             className="w-96"
             sx={{ padding: "2px 4px" }}
-            value={project.name}
-            onChange={(e) => setProject({ ...project, name: e.target.value })}
+            value={projectCreateRequest.name}
+            onChange={(e) =>
+              setProjectCreateRequest({
+                ...projectCreateRequest,
+                name: e.target.value,
+              })
+            }
             required
           />
         </FormField>
@@ -53,19 +73,22 @@ const ProjectCreate: React.FC = () => {
             rows={4}
             className="w-96"
             sx={{ padding: "2px 4px" }}
-            value={project.description}
+            value={projectCreateRequest.description}
             onChange={(e) =>
-              setProject({ ...project, description: e.target.value })
+              setProjectCreateRequest({
+                ...projectCreateRequest,
+                description: e.target.value,
+              })
             }
           />
         </FormField>
         <FormField label="通知方法">
           <Select
-            value={project.notification.type}
+            value={projectCreateRequest.notification.type}
             className="w-96"
             onChange={(e) =>
-              setProject({
-                ...project,
+              setProjectCreateRequest({
+                ...projectCreateRequest,
                 notification: { type: e.target.value as "slack" | "email" },
               })
             }

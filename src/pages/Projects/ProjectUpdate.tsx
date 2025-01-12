@@ -1,58 +1,78 @@
 import { MenuItem, Select, TextField } from "@mui/material";
-import { FormEvent, useEffect } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useProjectUpdate } from "../../hooks/useProjects";
 import { parseError } from "../../utils/error";
 import { FormField } from "../../components/Form";
 import { SubmitButton } from "../../components/Button";
+import { Location } from "../../types/location";
 
-function ProjectUpdate() {
+function ProjectUpdate({
+  setLocationList,
+}: {
+  setLocationList: Dispatch<SetStateAction<Location[]>>;
+}) {
   const { projectId } = useParams();
   const {
-    updateProjectRequest,
-    setUpdateProjectRequest,
-    updateError,
+    projectUpdateRequest,
+    setProjectUpdateRequest,
+    projectUpdateError,
     updateProject,
+    fetchProjectInitialUpdateData,
+    setProjectUpdateLoading,
+    projectUpdateLoading,
   } = useProjectUpdate();
   const { state } = useLocation();
 
   useEffect(() => {
-    const project = state?.project;
+    const fetchData = async () => {
+      const project = state?.project;
+      if (project) {
+        setProjectUpdateRequest(project);
+      } else if (projectId) {
+        fetchProjectInitialUpdateData(Number(projectId));
+      }
+      setLocationList([
+        { name: "ホーム", href: "/" },
+        { name: "プロジェクト", href: "/projects" },
+        { name: project?.name ?? "", href: `/projects/${projectId}` },
+      ]);
+      setProjectUpdateLoading(false);
+    };
 
-    if (projectId) {
-      setUpdateProjectRequest({
-        ID: project?.ID || Number(projectId),
-        name: project?.name || "",
-        description: project?.description || "",
-        notification: { type: project?.notification.type || "slack" },
-      });
-    }
-  }, [projectId, setUpdateProjectRequest, state?.project]);
+    fetchData();
+  }, []);
+
+  if (projectUpdateLoading) {
+    return <div>読み込み中...</div>;
+  }
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    updateProject(updateProjectRequest);
+    updateProject(projectUpdateRequest);
 
-    if (updateError) {
-      console.error(updateError);
+    if (!projectUpdateError) {
+      window.location.href = `/projects/${projectId}`;
     }
+
+    console.error(projectUpdateError);
   };
 
   return (
     <div className="p-4 flex flex-col gap-4">
-      {updateError && (
+      {projectUpdateError && (
         <div className="p-4 text-red-700 bg-red-100 rounded-md border border-red-400">
-          {parseError(updateError)}
+          {parseError(projectUpdateError)}
         </div>
       )}
       <h1 className="text-2xl font-bold">プロジェクト更新</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <FormField label="プロジェクト名">
           <TextField
-            value={updateProjectRequest.name}
+            value={projectUpdateRequest.name}
             onChange={(e) =>
-              setUpdateProjectRequest({
-                ...updateProjectRequest,
+              setProjectUpdateRequest({
+                ...projectUpdateRequest,
                 name: e.target.value,
               })
             }
@@ -62,10 +82,10 @@ function ProjectUpdate() {
           <TextField
             multiline
             rows={4}
-            value={updateProjectRequest.description}
+            value={projectUpdateRequest.description}
             onChange={(e) =>
-              setUpdateProjectRequest({
-                ...updateProjectRequest,
+              setProjectUpdateRequest({
+                ...projectUpdateRequest,
                 description: e.target.value,
               })
             }
@@ -73,11 +93,11 @@ function ProjectUpdate() {
         </FormField>
         <FormField label="通知方法">
           <Select
-            value={updateProjectRequest.notification.type}
+            value={projectUpdateRequest.notification.type}
             className="w-32"
             onChange={(e) =>
-              setUpdateProjectRequest({
-                ...updateProjectRequest,
+              setProjectUpdateRequest({
+                ...projectUpdateRequest,
                 notification: { type: e.target.value as "slack" | "email" },
               })
             }

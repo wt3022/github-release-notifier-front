@@ -61,7 +61,7 @@ interface NotificationUpdate {
 interface ProjectUpdate {
   ID: number;
   name: string;
-  description: string;
+  description: string | null;
   notification: NotificationUpdate;
 }
 

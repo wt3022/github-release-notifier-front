@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ProjectService from "../services/ProjectService";
 import { Project, ProjectCreate, ProjectUpdate } from "../types/Projects";
 
@@ -6,93 +6,130 @@ const projectService = new ProjectService();
 
 // プロジェクト一覧を取得するフック
 const useProjectList = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [projectList, setProjectList] = useState<Project[]>([]);
+  const [projectListLoading, setProjectListLoading] = useState<boolean>(false);
+  const [projectListError, setProjectListError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setLoading(true);
-        const data = await projectService.fetchProjectList();
-        setProjects(data);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occurred");
-        }
-      } finally {
-        setLoading(false);
+  const fetchProjectList = async () => {
+    try {
+      setProjectListLoading(true);
+      const data = await projectService.fetchProjectList();
+      setProjectList(data);
+    } catch (err) {
+      if (err instanceof Error) {
+        setProjectListError(err.message);
+      } else {
+        setProjectListError("An unknown error occurred");
       }
-    };
+    } finally {
+      setProjectListLoading(false);
+    }
+  };
 
-    fetchProjects();
-  }, []);
-
-  return { projects, loading, error };
+  return {
+    projectList,
+    projectListLoading,
+    projectListError,
+    setProjectListLoading,
+    setProjectListError,
+    fetchProjectList,
+  };
 };
 
 // プロジェクト詳細を取得するフック
 const useProjectDetail = (id: string | undefined) => {
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchProjectDetail = async () => {
-      try {
-        setLoading(true);
-        const data = await projectService.fetchProjectDetail(id);
-        setProject(data);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occurred");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProjectDetail();
-  }, [id]);
-
-  return { project, loading, error };
-};
-
-const useProjectCreate = () => {
-  const [project, setProject] = useState<ProjectCreate>({
+  const [projectDetail, setProjectDetail] = useState<Project>({
+    ID: Number(id),
     name: "",
     description: "",
     notification: {
       type: "slack",
+      ID: 0,
+      CreatedAt: "",
+      UpdatedAt: "",
+      project: 0,
     },
+    watch_repositories: [],
+    CreatedAt: "",
+    UpdatedAt: "",
   });
-  const [createError, setCreateError] = useState<string | null>(null);
+  const [projectDetailLoading, setProjectDetailLoading] =
+    useState<boolean>(false);
+  const [projectDetailError, setProjectDetailError] = useState<string | null>(
+    null,
+  );
+
+  const fetchProjectDetail = async (
+    id: string | undefined,
+  ): Promise<Project> => {
+    try {
+      setProjectDetailLoading(true);
+
+      const data = await projectService.fetchProjectDetail(
+        id ?? String(projectDetail?.ID),
+      );
+      setProjectDetail(data);
+      return data;
+    } catch (err) {
+      if (err instanceof Error) {
+        setProjectDetailError(err.message);
+      } else {
+        setProjectDetailError("An unknown error occurred");
+      }
+    } finally {
+      setProjectDetailLoading(false);
+    }
+    return projectDetail;
+  };
+
+  return {
+    projectDetail,
+    projectDetailLoading,
+    setProjectDetailLoading,
+    projectDetailError,
+    setProjectDetailError,
+    fetchProjectDetail,
+  };
+};
+
+const useProjectCreate = () => {
+  const [projectCreateRequest, setProjectCreateRequest] =
+    useState<ProjectCreate>({
+      name: "",
+      description: "",
+      notification: {
+        type: "slack",
+      },
+    });
+  const [projectCreateError, setProjectCreateError] = useState<string | null>(
+    null,
+  );
 
   const createProject = async (project: ProjectCreate) => {
     try {
       await projectService.createProject(project);
-      setCreateError(null);
+      setProjectCreateError(null);
     } catch (err) {
       if (err instanceof Error) {
-        setCreateError(err.message);
+        setProjectCreateError(err.message);
       } else {
-        setCreateError("予期せぬエラーが発生しました");
+        setProjectCreateError("予期せぬエラーが発生しました");
       }
       throw err;
     }
   };
 
-  return { project, setProject, createError, setCreateError, createProject };
+  return {
+    projectCreateRequest,
+    setProjectCreateRequest,
+    projectCreateError,
+    setProjectCreateError,
+    createProject,
+  };
 };
 
 const useProjectUpdate = () => {
-  const [updateProjectRequest, setUpdateProjectRequest] =
+  const [projectUpdateRequest, setProjectUpdateRequest] =
     useState<ProjectUpdate>({
       ID: 0,
       name: "",
@@ -102,31 +139,53 @@ const useProjectUpdate = () => {
       },
     });
 
-  const [updateError, setUpdateError] = useState<string | null>(null);
+  const [projectUpdateError, setProjectUpdateError] = useState<string | null>(
+    null,
+  );
+  const [projectUpdateLoading, setProjectUpdateLoading] =
+    useState<boolean>(false);
 
   const updateProject = async (project: ProjectUpdate) => {
     try {
+      setProjectUpdateLoading(true);
       await projectService.updateProject(project);
     } catch (err) {
       if (err instanceof Error) {
-        setUpdateError(err.message);
+        setProjectUpdateError(err.message);
       } else {
-        setUpdateError("予期せぬエラーが発生しました");
+        setProjectUpdateError("予期せぬエラーが発生しました");
       }
+    } finally {
+      setProjectUpdateLoading(false);
+    }
+  };
+
+  const fetchProjectInitialUpdateData = async (id: number) => {
+    try {
+      const data = await projectService.fetchProjectDetail(String(id));
+      setProjectUpdateRequest(data);
+    } catch (err) {
+      console.error("更新エラー:", err);
     }
   };
 
   return {
-    updateProjectRequest,
-    setUpdateProjectRequest,
-    updateError,
+    projectUpdateRequest,
+    setProjectUpdateRequest,
+    projectUpdateError,
+    setProjectUpdateError,
     updateProject,
+    fetchProjectInitialUpdateData,
+    projectUpdateLoading,
+    setProjectUpdateLoading,
   };
 };
 
 const useBulkDeleteProject = () => {
   const [deleteProjectIDs, setDeleteProjectIDs] = useState<Array<number>>([]);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteProjectError, setDeleteProjectError] = useState<string | null>(
+    null,
+  );
 
   const deleteProject = async (projectIds: Array<number>): Promise<void> => {
     try {
@@ -134,14 +193,20 @@ const useBulkDeleteProject = () => {
       setDeleteProjectIDs([]);
     } catch (err) {
       if (err instanceof Error) {
-        setDeleteError(err.message);
+        setDeleteProjectError(err.message);
       } else {
-        setDeleteError("予期せぬエラーが発生しました");
+        setDeleteProjectError("予期せぬエラーが発生しました");
       }
     }
   };
 
-  return { deleteProjectIDs, setDeleteProjectIDs, deleteError, deleteProject };
+  return {
+    deleteProjectIDs,
+    setDeleteProjectIDs,
+    deleteProjectError,
+    setDeleteProjectError,
+    deleteProject,
+  };
 };
 
 export {

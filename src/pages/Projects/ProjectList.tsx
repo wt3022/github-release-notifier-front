@@ -1,18 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useBulkDeleteProject, useProjectList } from "../../hooks/useProjects";
 import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, TextField } from "@mui/material";
 import MaterialIconOutlined from "../../components/MaterialIconOutlined";
 import { formatDate } from "../../utils/date";
 import { NavigateButton } from "../../components/Button";
+import { Location } from "../../types/location";
 
-const ProjectList: React.FC = () => {
+const ProjectList: React.FC<{
+  setLocationList: React.Dispatch<React.SetStateAction<Location[]>>;
+}> = ({ setLocationList }) => {
   const navigate = useNavigate();
-  const { projects, loading, error } = useProjectList();
+  const {
+    projectList,
+    projectListLoading,
+    projectListError,
+    setProjectListLoading,
+    fetchProjectList,
+  } = useProjectList();
   const [searchText, setSearchText] = useState("");
   const [editMode, setEditMode] = useState(false);
-  const { deleteProjectIDs, setDeleteProjectIDs, deleteError, deleteProject } =
-    useBulkDeleteProject();
+  const {
+    deleteProjectIDs,
+    setDeleteProjectIDs,
+    deleteProjectError,
+    deleteProject,
+  } = useBulkDeleteProject();
+
+  useEffect(() => {
+    fetchProjectList();
+    setProjectListLoading(false);
+    setLocationList([
+      { name: "ホーム", href: "/" },
+      { name: "プロジェクト", href: "/projects" },
+    ]);
+  }, []);
 
   const handleDelete = async () => {
     try {
@@ -25,13 +47,13 @@ const ProjectList: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (projectListLoading) {
     return <div>読み込み中...</div>;
   }
 
-  if (error || deleteError) {
-    console.log(error, deleteError);
-    return <div>エラー: {error || deleteError}</div>;
+  if (projectListError || deleteProjectError) {
+    console.log(projectListError, deleteProjectError);
+    return <div>エラー: {projectListError || deleteProjectError}</div>;
   }
 
   return (
@@ -74,10 +96,10 @@ const ProjectList: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-col divide-y divide-gray-200">
-        {projects.length === 0 ? (
+        {projectList.length === 0 ? (
           <div>プロジェクトが見つかりません</div>
         ) : (
-          projects.map((project) => (
+          projectList.map((project) => (
             <div
               key={project.ID}
               className="rounded-lg hover:bg-gray-100 flex items-center justify-between"

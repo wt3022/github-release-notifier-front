@@ -2,34 +2,41 @@ import { useLocation } from "react-router-dom";
 import { parseError } from "../../utils/error";
 import { MenuItem, Select, TextField } from "@mui/material";
 import { useCreateRepository } from "../../hooks/useRepositories";
-import { FormEvent, useEffect } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect } from "react";
 import { WatchType } from "../../types/Repositories";
 import { FormField } from "../../components/Form";
 import { SubmitButton } from "../../components/Button";
+import { Location } from "../../types/location";
 
-function RepositoryCreate() {
+function RepositoryCreate({
+  setLocationList,
+}: {
+  setLocationList: Dispatch<SetStateAction<Location[]>>;
+}) {
   const { project } = useLocation().state;
   const {
-    repository,
-    setRepository,
-    createError,
-    setCreateError,
+    repositoryCreateRequest,
+    setRepositoryCreateRequest,
+    repositoryCreateError,
+    setRepositoryCreateError,
     createRepository,
   } = useCreateRepository();
 
   useEffect(() => {
-    setRepository({
-      ...repository,
-      project_id: project.ID,
-    });
-  }, [project, repository, setRepository]);
+    setLocationList([
+      { name: "ホーム", href: "/" },
+      { name: "プロジェクト", href: "/projects" },
+      { name: project.name, href: `/projects/${project.ID}` },
+      { name: "リポジトリ作成", href: "/repositories/create" },
+    ]);
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setCreateError(null);
+    setRepositoryCreateError(null);
 
     try {
-      await createRepository(repository);
+      await createRepository(repositoryCreateRequest);
       window.location.href = `/projects/${project.ID}`;
     } catch (err) {
       console.error(err);
@@ -38,9 +45,9 @@ function RepositoryCreate() {
 
   return (
     <div className="flex flex-col gap-4">
-      {createError && (
+      {repositoryCreateError && (
         <div className="p-4 text-red-700 bg-red-100 rounded-md border border-red-400">
-          {parseError(createError)}
+          {parseError(repositoryCreateError)}
         </div>
       )}
       <h1 className="text-2xl text-gray-800">リポジトリ作成</h1>
@@ -52,9 +59,12 @@ function RepositoryCreate() {
             placeholder="リポジトリオーナー"
             className="w-96"
             sx={{ padding: "2px 4px" }}
-            value={repository.owner}
+            value={repositoryCreateRequest.owner}
             onChange={(e) =>
-              setRepository({ ...repository, owner: e.target.value })
+              setRepositoryCreateRequest({
+                ...repositoryCreateRequest,
+                owner: e.target.value,
+              })
             }
             required
           />
@@ -66,20 +76,23 @@ function RepositoryCreate() {
             placeholder="リポジトリ名"
             className="w-96"
             sx={{ padding: "2px 4px" }}
-            value={repository.name}
+            value={repositoryCreateRequest.name}
             onChange={(e) =>
-              setRepository({ ...repository, name: e.target.value })
+              setRepositoryCreateRequest({
+                ...repositoryCreateRequest,
+                name: e.target.value,
+              })
             }
             required
           />
         </FormField>
         <FormField label="リポジトリタイプ">
           <Select
-            value={repository.watch_type}
+            value={repositoryCreateRequest.watch_type}
             className="w-32"
             onChange={(e) =>
-              setRepository({
-                ...repository,
+              setRepositoryCreateRequest({
+                ...repositoryCreateRequest,
                 watch_type: e.target.value as WatchType,
               })
             }
